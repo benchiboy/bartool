@@ -1,0 +1,95 @@
+
+    <!-- The navigation bar-->
+    <!--<div id = "noti" class='notification '><span id="message"><p id="actlMsg"></p></span></div>-->
+    <nav class="navbar    navbar-fixed-top mainHeader ">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-right">
+                <span id="icons">
+
+				     <button  data-original-title="Logout" data-placement="bottom" data-toggle="tooltip" title="Logout" class="btn btn-action glyphicon glyphicon-search"  type="button"></button>
+					<a  data-original-title="Search" data-placement="bottom" data-toggle="tooltip" title=""  id="searchFormBtn" class="btn btn-action glyphicon glyphicon-off"  href="/logout"></a> 
+                 </span>
+                 <a class="navbar-brand"> </a>
+		         <p class="navbar-brand" href="#"></p>
+
+                <form action="" method="POST" class="hidden" id="EditForm">
+                    <input type="text" name="catname" placeholder="new cat name" >
+                    <input type="submit" value="Submit" class="btn btn-default" />
+                </form>
+
+                <form action="/search/" method="POST" class="hidden" id="SearchForm">
+                    <input type="text" name="query" placeholder="Search" >
+                    <input type="submit" value="Submit" class="btn btn-default" />
+                </form>
+				
+            </div>
+        </div>
+    </nav>
+	
+    <!-- SIDEBAR -->
+    <div data-sidebar="true" class="sidebar-trigger">
+
+        <a class="sidebar-toggle" href="">
+            <span class="glyphicon glyphicon-align-justify"></span>
+        </a>
+
+        <div class="sidebar-wrapper sidebar-default">
+            <div class="sidebar-scroller">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-group"><span>菜单</span>
+                        <ul class="sidebar-group-menu">
+
+                            <li class="sidebar-item">
+                                <a href="/taskindex">
+									<span class="glyphicon glyphicon-tasks"></span>
+									<span class="nav-item">定时作业</span>
+								</a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="/sqlindex/" class="" >
+									<span class="glyphicon glyphicon-check"></span>  
+									<span class="nav-item">内部SQL</span>
+								</a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="/migindex/"  class="">
+									<span class="glyphicon glyphicon-trash"></span> 
+									<span class="nav-item">数据迁移</span>
+								</a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="/taskload/"  class="active">
+									<span class="glyphicon glyphicon-trash"></span>
+									<span class="nav-item"> 任务加载</span>
+								</a>
+                            </li>
+
+                            <hr>
+
+                            <li class="sidebar-item">
+                                <h5> Categories</h5>
+                                <!--<button title="New category" id="toggleCategoryForm" data-placement="left" data-toggle="tooltip" class="btn glyphicon glyphicon-plus" style="font-size:small; margin-left:120px;"></button>-->
+                                <span id="categoryForm">
+                                 <form action="/add-category/" method="POST">
+                                 <span> 
+							         <input type="text" name="category" width="50px">
+							         <input type="submit" text="submit" class="btn btn-primary" value="Submit"/>
+                                 </span>
+                                </form>
+                                </span>
+                            </li>
+                            
+                            <li class="sidebar-item">
+                                <a href="/类别/">
+                                    <span class="nav-item"></span> <span class="badge pull-right"></span></a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>

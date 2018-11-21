@@ -1,0 +1,570 @@
+
+
+<html>
+
+<head>
+    <title>
+    </title>
+	<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Mobile viewport optimized -->
+    
+    <!-- Bootstrap CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="/static/css/bootstrapValidator.min.css"/>
+    <!-- Custom CSS -->
+    <link href="/static/css/styles.css" rel="stylesheet">
+    <!--<link href="/static/css/jquery-ui.min.css" rel="stylesheet">-->
+    <link href="/static/css/sidebar.css" rel="stylesheet">
+    <link href="/static/css/sidebar-bootstrap.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Include Modernizr in the head, before any other Javascript -->
+    <!--<script src="/static/js/modernizr-2.6.2.min.js"></script>-->
+    <!-- All Javascript at the bottom of the page for faster page loading -->
+    <script src="/static/js/jquery.min.js"></script>
+    <!--<script src="/static/js/jquery-ui.min.js"></script> ENABLE WHEN DUE DATE FEATURE IS REQUIRED-->
+
+    <!-- If no online access, fallback to our hardcoded version of jQuery
+		<script>window.jQuery || document.write('<script src="/static/js/jquery-1.8.2.min.js"><\/script>')</script>
+	-->
+    <!-- Bootstrap JS -->
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/bootstrapValidator.min.js"></script>
+
+
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/hammer.min.js"></script>
+    <script src="/static/js/sidebar.js"></script>
+	
+	<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+	
+	</head>
+<body>
+
+<div id="item_list_id">		
+
+  <div class="container-fluid" >
+	<div class="row clearfix" >
+			<nav class="navbar  navbar-fixed-top mainHeader" role="navigation" >
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Barcode</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<form class="navbar-form navbar-left " role="search" style="padding-left:400px;">
+						<div class="form-group">
+							<input type="text" class="form-control"   v-model="findText"  />
+							<button type="submit" class="btn btn-default"  v-on:click="search(currPage,pageSize)">查找</button>
+						</div> 
+					</form>
+					<ul class="nav navbar-nav navbar-right" style="padding-right:60px;">
+						<li class="dropdown">
+							 <a href="#" class="dropdown-toggle"  data-toggle="dropdown">设置<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									 <a href="#">设置</a>
+								</li>
+								<li class="divider">
+								</li>
+								<li>
+									 <a href="#" v-on:click="logout()">退出</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+			</nav>
+
+	</div >
+	
+		
+	<div class="row " style="border:1px solid #ddd;">
+		<div class="col-md-2 column"  style=" margin-top:9px;border:1px solid red; background:black; height:800px;">
+			<div style="margin-top:10px;"   >				
+			<ul class="nav nav-pills nav-stacked" style="max-width: 500px;">
+			    <li class="active">
+			        <a href="#">
+			            <span class="badge pull-right"></span>系统功能</a>
+			     </li>
+				<li >
+			        <a href="#">
+			            <span class="badge pull-right">{{totalCount}}</span>二维码</a>
+			     </li>
+			  
+			</ul>
+			</div>
+		</div>
+	
+	<div class="col-md-10 column">
+			<div class="panel panel-primary " style="margin-top:9px;height:800px; ">
+				<div class="panel-heading">
+					<span class="panel-title">
+						条码列表
+					</span>
+				</div>
+				<div class="panel-body" style="height:650px; ">
+					<table class="table" >
+					<thead>
+						<tr>
+							<th>
+								编号
+							</th>
+							<th>
+								标题
+							</th>
+							<th>
+								文件名称
+							</th>
+							<th>
+								长-高(px)
+							</th>
+							<th>
+								二维码
+							</th>
+							<th>
+								创建时间
+							</th>
+							<th>
+								操作
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					<tr class="info" v-for="(item, index) in tblArray">
+						<td>
+							{{item.No}}
+						</td>
+						<td>
+							{{item.Title}}
+						</td>
+						<td>
+							<a href="#">{{item.No}}.jpg</a>
+						</td>
+						<td>
+							{{item.Length}}-{{item.Height}}
+						</td>
+						<td>
+							<img :src='"/static/"+item.No+".jpg"' class="img-rounded" height="30" length="30" v-on:click="image_show(item)"> 
+						</td>
+						
+						<td>
+							{{item.CreateTime}}
+						</td>
+						<td>
+							<a href="#" v-on:click="modify_show(item)">修改 <a/>
+							<a href="#" v-on:click="delete_show(item)">删除 <a/>
+						</td>
+					</tr>
+					
+					</tbody>
+				</table>
+			</div>
+			<div class="panel-footer">
+				<span>		
+				<ul class="pager">
+				    <li><a href="#"  v-on:click="goPrivPage(currPage,pageSize)">上一页</a></li>
+				    <li><a href="#"  v-on:click="goNextPage(currPage,pageSize)">下一页</a></li>
+					<li><a href="#"  >第{{currPage+1}}页</a></li>
+					<li><a href="#"  v-on:click="add_show()"  style="margin-left:200px"> 增加 </a></li>
+				</ul>
+				</span>
+			</div>
+			</div>
+			
+			<div class="modal fade" id="ShowNoteModal">  
+			  <div class="modal-dialog">  
+			    <div class="modal-content message_align">  
+			      <div class="modal-header">  
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+			        <h4 class="modal-title">提示信息</h4>  
+			      </div>  
+			      <div class="modal-body" >  
+					<div  style="margin:0 auto">
+			       	 <img  v-if="isShow"  :src='"/static/"+deleteId+".jpg"'>
+					</div>
+			      </div>  
+			      <div class="modal-footer">  
+			         <input type="hidden" id="url"/>  
+			         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+			      </div>  
+			    </div><!-- /.modal-content -->  
+			  </div><!-- /.modal-dialog -->  
+			</div><!-- /.modal -->  
+					
+					
+			<div class="modal fade" id="delNoteModal">  
+			  <div class="modal-dialog">  
+			    <div class="modal-content message_align">  
+			      <div class="modal-header">  
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+			        <h4 class="modal-title">提示信息</h4>  
+			      </div>  
+			      <div class="modal-body">  
+			        <p>您确认要删除以下表的条码吗？</p> <span id="delete_id">{{deleteId}}</span>
+			      </div>  
+			      <div class="modal-footer">  
+			         <input type="hidden" id="url"/>  
+			         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+			         <a  v-on:click="delete_commit()" class="btn btn-success" data-dismiss="modal">确定</a>  
+			      </div>  
+			    </div><!-- /.modal-content -->  
+			  </div><!-- /.modal-dialog -->  
+			</div><!-- /.modal -->  
+
+			<!-- Add note modal -->
+			<div class="modal fade " id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="newNoteLabel" aria-hidden="true">
+			    <div class="modal-dialog col-lg-21">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button v-on:click="Reset_form()" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			                <h4 class="modal-title" id="newNoteLabel" v-if="isNew" ><span class="glyphicon glyphicon-pencil"></span>新增二维码</h4>
+							<h4 class="modal-title" id="newNoteLabel" v-if="!isNew" ><span class="glyphicon glyphicon-pencil"></span> 修改二维码</h4>
+			            </div>
+						
+			            <div class="modal-body">
+						<form class="form-horizontal" role="form" id="myform" >			
+							<div class="form-group">
+			    					<label for="lastname" class="col-sm-3 control-label"  v-show="!isNew" >编号</label>
+								    <div class="col-sm-8">
+			      						<input type="text" class="form-control"   id="no" v-model="currTbl.No"  name="no"  v-if="!isNew"  readonly  placeholder="编号">
+			    					</div>
+			  				</div>
+														
+							<div class="form-group">
+			    					<label for="lastname" class="col-sm-3 control-label">标题</label>
+								    <div class="col-sm-8">
+			      						<input type="text" class="form-control" name="title" v-model="currTbl.Title" id="title" placeholder="标题">
+			    					</div>
+			  				</div>
+							<div class="form-group" id="key_fileld_group">
+			    					<label for="lastname" class="col-sm-3 control-label">内容</label>
+								    <div class="col-sm-8">
+			      						<textarea  type="text"  rows="3" class="form-control" v-model="currTbl.Context" id="context" name="context"  placeholder="二维码内容"></textarea>
+			    					</div>
+			  				</div>
+							<div class="form-group">
+									<input type="hidden" class="form-control" name="pageindex" v-model="currPage" id="pageindex" >
+									<input type="hidden" class="form-control" name="pagesize" v-model="pageSize" id="pageindex" >
+									<input type="hidden" class="form-control" name="findText" v-model="findText" id="findText" >
+									
+			    					<label for="lastname" class="col-sm-3 control-label">大小</label>
+								    <div class="col-sm-8">
+			      						<input type="text" class="form-control" name="length"   v-model="currTbl.Length" id="length" placeholder="长度">
+										<input type="text" class="form-control" name="height" v-model="currTbl.Height" id="height" placeholder="高度">
+			    					</div>
+			  				</div>
+
+						</div>
+						
+			            <div class="modal-footer">
+			                <button type="button"  v-on:click="Reset_form()" class="btn btn-primary" data-dismiss="modal"  >取消</button>
+			                <button type="button"  value="确认" class="btn btn-primary"  v-on:click="add_commit(currTbl)"  v-if="isNew">确认</button>
+							<button type="button"  value="确认" class="btn btn-primary" v-on:click="modify_commit()" v-if="!isNew" >确认</button>
+			            </div>
+						</form>
+			
+			        </div>
+			    </div>
+			</div>
+		</div>	
+	</div>  <!--end row -->
+	</div>  <!--end vue item -->
+</div> <!--end container -->
+
+<script>
+  var example1=new Vue({
+	el: '#item_list_id',
+  	data: function(){
+            return {
+                tblArray:[],
+				currTbl:{},
+				isNew:true,
+				isShow:false,
+				deleteId:"0",
+				tblAddlist:[],
+				totalCnt:0,
+				currPage:0,
+				findText:"",
+				totalPage:0,
+				pageSize:10,
+        	}
+    },
+	
+	mounted: function () {
+		 var _this = this;
+		 $.ajax({
+		    url:"/bardatas/",
+			type:"POST",
+			async:false, 
+            data:'{"PageIndex":"0","PageSize":"'+_this.pageSize+'"}',
+	        contentType:"application/json",  
+		    success:function(data){
+				 _this.init_page(data)
+				console.log("======",_this.totalPage)
+            },
+			error:function(data){
+				 alert("异常！")
+			}
+	    });
+	},
+	
+	methods: {
+		Reset_form: function(){
+			$("#myform").data('bootstrapValidator').resetForm();  
+		},
+		//新增Barcode
+		init_page: function (data) {
+			tobj=$.parseJSON(data)
+			this.tblArray=tobj.Nodes;
+			this.totalCnt=tobj.Count;
+			this.totalPage=tobj.TotalPage;
+			this.currPage=tobj.CurrPage;
+		},
+		
+	    add_show: function () {
+		 	this.currTbl={};
+			this.currTbl.Height=50
+			this.currTbl.Length=50
+			this.isNew=true;
+			$('#addNoteModal').modal('show');
+	    },
+		//新增Barcode提交
+		add_commit: function (id) {
+			var _this = this
+			$('#myform').bootstrapValidator('validate');
+			if(!$('#myform').data('bootstrapValidator').isValid()){  
+				return
+			}
+	    	$.ajax({
+			    url:"/baradd/",
+				type:"POST",
+	            data:JSON.stringify($('form').serializeObject()),
+		        contentType:"application/json",  //缺失会出现URL编码，无法转成json对象
+			    success:function(data){
+					$('#addNoteModal').modal('hide');
+					$("#myform").data('bootstrapValidator').resetForm();  
+					_this.init_page(data)
+	            },
+				error:function(data){
+					console.log(data.responseText)
+					alert(data.responseText)
+				}
+		    });
+	    },
+		
+		//修改迁移计划显示
+		modify_show: function (item) {
+			this.isNew=false;
+			var _this = this
+			dataj="{\"No\":\""+item.No+"\"}";
+				$.ajax({
+				    url:"/barget/",
+					type:"POST",
+		            data:dataj,
+			        contentType:"application/json",  //缺失会出现URL编码，无法转成json对象
+				    success:function(data){
+						 datao=JSON.parse(data)
+						_this.currTbl=datao
+						$('#addNoteModal').modal('show');
+		            },
+					error:function(data){
+						console.log(data.responseText)
+						alert(data.responseText)
+					}
+			    });
+	    },
+		
+		//修改迁移计划显示
+		image_show: function (item) {
+			this.currTbl=item;
+			this.isShow=true;
+			this.deleteId=item.No
+			$('#ShowNoteModal').modal('show');
+	    },
+		
+		//修改迁移计划提交
+		modify_commit: function () {
+			var _this = this
+			$('#myform').bootstrapValidator('validate');
+			if(!$('#myform').data('bootstrapValidator').isValid()){  
+				return
+			}
+			$.ajax({
+				    url:"/barset/",
+					type:"POST",
+		            data:JSON.stringify($('form').serializeObject()),
+			        contentType:"application/json",  //缺失会出现URL编码，无法转成json对象
+				    success:function(data){
+						alert("修改成功！")
+						$("#myform").data('bootstrapValidator').resetForm();  
+						$('#addNoteModal').modal('hide');
+						_this.init_page(data)
+		            },
+					error:function(data){
+						console.log(data.responseText)
+						alert(data.responseText)
+						$('#addNoteModal').modal('hide');
+					}
+			});
+	     },
+		//删除迁移计划显示
+		delete_show: function (item) {
+	    	this.currTbl=item;
+			this.deleteId=item.No
+			$('#delNoteModal').modal('show');
+	    },
+		//删除迁移计划提交
+		delete_commit: function () {
+			var _this = this
+			dataj="{\"No\":\""+this.currTbl.No+"\",\"pageIndex\":\""+this.currPage+"\",\"pageSize\":\""+this.pageSize+"\"}";
+			$.ajax({
+				    url:"/bardel/",
+					type:"POST",
+		            data:dataj,
+			        contentType:"application/json",  //缺失会出现URL编码，无法转成json对象
+				    success:function(data){
+						_this.init_page(data)
+		            },
+					error:function(data){
+						console.log(data.responseText)
+						alert(data.responseText)
+						return false;
+					}
+				});
+	    },
+		//跳到页面
+		goNextPage: function (pageIndex,pageSie) {
+			var _this = this
+			if (_this.totalPage==0){
+				return
+			}
+			if (pageIndex==_this.totalPage-1){
+				pageIndex=pageIndex;
+			}else{
+				pageIndex=pageIndex+1;
+			}
+	    	$.ajax({
+		    url:"/barpage/",
+			type:"POST",
+			async:false, 
+            data:'{"PageIndex":"'+pageIndex+'","PageSize":"'+pageSie+'","FindText":"'+_this.findText+'"}',
+	        contentType:"application/json",  
+		    success:function(data){
+				_this.init_page(data)
+            },
+			error:function(data){
+				 alert("异常！")
+			}
+	    	});
+	    },
+		//跳到页面
+		goPrivPage: function (pageIndex,pageSie) {
+			var _this = this
+			if (pageIndex==0){
+				return
+			}
+			pageIndex=pageIndex-1;
+	    	$.ajax({
+		    url:"/barpage/",
+			type:"POST",
+			async:false, 
+            data:'{"PageIndex":"'+pageIndex+'","PageSize":"'+pageSie+'","FindText":"'+_this.findText+'"}',
+	        contentType:"application/json",  
+		    success:function(data){
+				_this.init_page(data)
+				console.log("currPage=======",_this.currPage)
+            },
+			error:function(data){
+				 alert("异常！")
+			}
+	    	});
+	    },
+		
+		//查找功能
+		search: function (pageIndex,pageSie) {
+			var _this = this
+	    	$.ajax({
+		    url:"/barfind/",
+			type:"POST",
+			async:false, 
+            data:'{"PageIndex":"'+pageIndex+'","PageSize":"'+pageSie+'","FindText":"'+_this.findText+'"}',
+	        contentType:"application/json",  
+		    success:function(data){
+				_this.init_page(data)
+				console.log("currPage=======",_this.currPage)
+            },
+			error:function(data){
+				 alert("异常！")
+			}
+	    	});
+	    },
+		
+			//查找功能
+		logout: function () {
+	    	$.ajax({
+		    url:"/logout/",
+			type:"POST",
+			async:false, 
+            data:'',
+	        contentType:"application/json",  
+		    success:function(data){
+					location.href = "/gologin"
+            },
+			error:function(data){
+				 alert("异常！")
+			}
+	    	});
+	    },
+		
+	},
+	
+	computed: {
+	    totalCount: function () {
+        return  this.totalCnt;
+    }
+	
+  }
+})
+
+
+</script>
+
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

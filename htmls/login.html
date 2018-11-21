@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RCS Util Tools</title>
+
+  <!-- Bootstrap CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    
+    <link href="/static/css/bootstrapValidator.css"/>
+    <!-- Custom CSS -->
+    
+    <!-- Include Modernizr in the head, before any other Javascript -->
+    <!--<script src="/static/js/modernizr-2.6.2.min.js"></script>-->
+    <!-- All Javascript at the bottom of the page for faster page loading -->
+    <script src="/static/js/jquery.min.js"></script>
+    
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/bootstrapValidator.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+        <div class="page-header">
+            <h1 class="text-center">User Login...</h1>
+        </div>
+
+        <div class="col-lg-8 col-lg-offset-2">
+            <form id="defaultForm" method="post" class="form-horizontal" name="defaultForm">
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">用户名：</label>
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="username" value="admin" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">密码：</label>
+                    <div class="col-lg-5">
+                        <input type="password" class="form-control" name="password" value="admin123!" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+				
+                    <div class="col-lg-9 col-lg-offset-5">
+                        <button type="submit" class="btn btn-primary" onclick="Login()">Submit</button>
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script type="text/javascript">
+
+$.fn.serializeObject = function() {
+	var o = {};
+	var a = this.serializeArray();
+	$.each(a, function() {
+		if (o[this.name]) {
+			if (!o[this.name].push) {
+				o[this.name] = [ o[this.name] ];
+			}
+				o[this.name].push(this.value || '');
+			} else {
+				o[this.name] = this.value || '';
+			}
+		});
+		return o;
+}
+
+$(document).ready(function() {
+    $('#defaultForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            username: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: 'The username is required and can\'t be empty'
+                    },
+                }
+            },
+            password: {
+                validators: {
+                    notEmpty: {
+                        message: 'The password is required and can\'t be empty'
+                    },
+                    different: {
+                        field: 'username',
+                        message: 'The password can\'t be the same as username'
+                    },
+                    callback: {
+                        callback: function(value, validator) {
+                            // Check the password strength
+                            if (value.length < 6) {
+                                return {
+                                    valid: false,
+                                    message: 'The password must be more than 6 characters'
+                                }
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+
+	function Login(){
+		$.ajax({
+			    url:"/login/",
+				type:"POST",
+	            data:JSON.stringify($('#defaultForm').serializeObject()),
+		        contentType:"application/json",  //缺失会出现URL编码，无法转成json对象
+			    success:function(data){
+					location.href = "/index"
+	            },
+				error:function(data){
+					console.log(data.responseText)
+					alert(data.responseText)
+				}
+		    });
+	}
+
+
+
+</script>
+</body>
+</html>
